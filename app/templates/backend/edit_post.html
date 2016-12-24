@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block page_content %}
+<div class="page-header">
+    <h2>编辑博客</h2>
+    <p><a href="{{url_for('backend.index')}}">返回后台首页</a></p>
+</div>
+{{ wtf.quick_form(form) }}
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Bingo - Backend Post List{% endblock %}
+{% block page_content %}
+<div class="page-header">
+    <h2>管理博客</h2>
+    <p><a href="{{url_for('backend.index')}}">返回后台首页</a></p>
+</div>
+<div class="page-header">
+  <table class="table">
+        <thead>
+            <tr>
+                <td>标题</td>
+                <td>编写时间</td>
+                <td>类别</td>
+                <td>最后修改时间</td>
+                <td>关注人数</td>
+                <td>评论数</td>
+                <td>操作</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for post in posts %}
+            <tr>
+                <td>{{ post.title }}</td>
+                <td>{{ moment(post.timestamp).format('LLL') }}</td>
+                <td>{{ post.get_class_name() }}</td>
+                <td>{{ moment(post.last_update).fromNow() }}</td>
+                <td><h4><span class="label label-info">
+                    {{ post.users.count() }}</span></h4></td>
+                <td><h4><span class="label label-info">
+                    {{ post.comments.count() }}</span></h4></td>
+                <td>
+                    <a class="btn btn-danger" href="{{url_for('backend.update_post', id
+                    =post.id )}}">修改博客</a>
+                    &nbsp;&nbsp;
+                    <a class="btn btn-danger" href="{{url_for('backend.remove_user', id
+                    =post.id )}}">删除博客</a></td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="pagination">
+{{ macros.pagination_widget(pagination, 'backend.show_post_list') }}
+</div>
+
+{% endblock %}

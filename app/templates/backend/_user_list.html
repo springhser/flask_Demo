@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Bingo - Backend User List{% endblock %}
+{% block page_content %}
+<div class="page-header">
+    <h2>管理用户</h2>
+    <p><a href="{{url_for('backend.index')}}">返回后台首页</a></p>
+</div>
+
+<table class="table">
+        <thead>
+            <tr>
+                <td>用户名</td>
+                <td>邮箱</td>
+                <td>注册时间</td>
+                <td>操作</td>
+                <td>关注文章数</td>
+                <td>评论数</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ moment(user.member_since).format('LLL') }}</td>
+                <td>{% if user.can(Permission.USER) %}
+                    <a class="btn btn-danger" href="{{url_for('backend.forbid_comment', id
+                    =user.id )}}">禁止评论</a>
+                    {% else %}
+                    <a class="btn btn-primary" href="{{url_for('backend.forbid_comment', id
+                    =user.id )}}">恢复评论</a>
+                    {% endif %}
+                    &nbsp;&nbsp;
+                    <a class="btn btn-danger" href="{{url_for('backend.remove_user', id
+                    =user.id )}}">删除用户</a></td>
+                <td><h4><span class="label label-info">
+                    {{ user.posts.count() }}</span></h4></td>
+                <td><h4><span class="label label-info">
+                    {{ user.comments.count() }}</span></h4></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+<div class="pagination">
+{{ macros.pagination_widget(pagination, 'backend.show_user_list') }}
+</div>
+
+{% endblock %}

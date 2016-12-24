@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block page_content %}
+{% if post.title %}
+<h2>{{ post.title }}</h2>
+{% endif %}
+<h3 class="page-header">
+    <span class="label label-info">{{ name }}</span>
+    <span></span>
+    <span class="label label-info">关注人数：{{ post.users.count() }}</span>
+</h3>
+
+<div class="page-header">
+    {% if post.body_html %}
+        {{ post.body_html | safe}}
+    <!--渲染 HTML 格式内容时使用 | safe 后缀,其目的是告诉 Jinja2 不要转义 HTML 元素。出
+于安全考虑,默认情况下 Jinja2 会转义所有模板变量。Markdown 转换成的 HTML 在服务
+器上生成,因此可以放心渲染。-->
+    {% else %}
+        {{ post.body }}
+    {% endif %}
+</div>
+
+<small>编写时间： {{ post.timestamp }}</small>
+<p></p>
+<p class="text-center">
+    {% if current_user.is_authenticated %}
+        {% if current_user.is_following(post) %}
+        <a href="{{ url_for('main.unfollow', post_id = post.id) }}"
+           class="btn btn-primary btn-lg" role="button">取消关注</a>
+        {% else %}
+            <a href="{{ url_for('main.follow', post_id = post.id) }}"
+           class="btn btn-primary btn-lg" role="button">关注</a>
+        {% endif %}
+    {% else %}
+    <a href="{{ url_for('main.follow', post_id = post.id) }}"
+           class="btn btn-primary btn-lg" role="button">关注</a>
+    {% endif %}
+</p>
+<p class="text-center">
+<a href="{{ url_for('main.show_post_list', class_id=post.class_id)}}"
+   class="btn btn-primary btn-lg" role="button">返回目录</a>
+</p>
+
+<div class="page-header">
+    <h4 id="comments">发表评论</h4>
+    {% if current_user.is_authenticated and current_user.can(Permission.USER) %}
+    <div class="comment-form">
+        {{ wtf.quick_form(form) }}
+    </div>
+    {% else %}
+    <p class="text-center">
+        <a href="#" class="btn btn-danger">您没有登录或者评论权限被关闭</a>
+    </p>
+    {% endif %}
+</div>
+{% include '_comments.html' %}
+{% if pagination %}
+    <div class="pagination">
+        {{ macros.pagination_widget(pagination, 'main.show_post', fragment='#comments', post_id=post.id) }}
+    </div>
+{% endif %}
+{% endblock %}
+

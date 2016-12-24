@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Bingo - Acticle List{% endblock %}
+{% block page_content %}
+<div class="page-header">
+  <h1>{{ classification.name }}</h1>
+</div>
+{% for post in posts %}
+<ul class="list-group">
+  <li class="list-group-item">
+    <div class="row">
+      <div class="col-md-6">
+        <h3><a href="{{ url_for('main.show_post', post_id=post.id) }}">{{post.title}}</a> </h3>
+        <small>{{ post.timestamp }}</small>
+      </div>
+      <div class="col-md-6">
+           <p class="text-right"><h3><span class="label label-info">
+        关注人数：{{ post.users.count() }}</span>&nbsp;&nbsp;&nbsp;
+      <span class="label label-info">
+        评论数：{{ post.comments.count() }}</span></h3></p>
+      </div>
+    </div>
+  </li>
+</ul>
+{% endfor %}
+<div class="pagination">
+{{ macros.pagination_widget(pagination, 'main.show_post_list', class_id=classification.id ) }}
+</div>
+
+{% endblock %}

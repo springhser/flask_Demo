@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Bingo --Login{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>报上名来</h1>
+</div>
+<div class="col-md-4">
+    {{ wtf.quick_form(form) }}
+</div>
+<div class="col-md-4">
+    <p>
+        新用户吗?<a href="{{ url_for('auth.register')}}">注册</a>
+    </p>
+    <p>
+        忘记密码?<a href="{{ url_for('auth.forget_password')}}">点击重置密码</a>
+    </p>
+</div>
+{% endblock%}

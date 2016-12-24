@@ -1,0 +1,26 @@
+<html>
+
+<head></head>
+
+<body>
+    <script>
+    var cal = function (a) {
+                var sum = a;
+                var add = function (x) {
+                    if (x) {
+                        sum += x;
+                        return add;
+                    }
+                    else
+                        return sum;
+                };
+                return add;
+            };
+            var v = cal(0)(1)
+        alert(v(3)().toString());
+
+alert(adder(2)(3)(6));
+    </script>
+</body>
+
+</html>

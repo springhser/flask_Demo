@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Bingo - Backend Comment List{% endblock %}
+{% block page_content %}
+<div class="page-header">
+    <h2>管理评论</h2>
+    <p><a href="{{url_for('backend.index')}}">返回后台首页</a></p>
+</div>
+<div class="page-header">
+  <table class="table">
+        <thead>
+            <tr>
+                <td>评论内容</td>
+                <td>文章</td>
+                <td>用户</td>
+                <td>评论时间</td>
+                <td>操作</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for comment in comments %}
+            <tr>
+                <td>{% if comment.body_html %}
+                    {{ comment.body_html }}
+                    {% else %}
+                    {{ comment.body }}
+                    {% endif %}
+                </td>
+                <td>{{ comment.get_post().title }}</td>
+                <td>{{ comment.get_author().username }}</td>
+                <td>{{ moment(comment.timestamp).format('LLL') }}</td>
+                <td>{% if not comment.disabled %}
+                    <a class="btn btn-danger" href="{{url_for('backend.close_comment', id
+                    =comment.id )}}">关闭评论</a>
+                    {% else %}
+                    <a class="btn btn-primary" href="{{url_for('backend.enable_comment', id
+                    =comment.id )}}">显示评论</a>
+                    {% endif %}
+                    &nbsp;&nbsp;
+                    <a class="btn btn-danger" href="" onclick="alert(u'此功能暂不开放')">删除评论</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="pagination">
+{{ macros.pagination_widget(pagination, 'backend.manage_comment') }}
+</div>
+
+{% endblock %}

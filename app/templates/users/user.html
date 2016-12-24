@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Bingo --User Info {% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <div class="text-center">
+        {% if user.img_src %}
+    <img class="img-rounded profile-thumbnail" src="/static/{{user.img_src}}">
+        {% else %}
+        <img class="img-rounded profile-thumbnail" src="{{ url_for('static', filename='pic/moren1.jpg') }}">
+        {% endif %}
+    <div class="profile-header">
+        <h1>用户名：{{ user.username }}</h1>
+        {% if current_user.id == user.id %}
+        <p><h3>邮箱：{{ user.email }}</h3></p>
+        <p>Member since {{ moment(user.member_since).format('LLL') }}. |->Last seen {{ moment(user.last_seen).fromNow() }}.</p>
+        {% endif %}
+    </div>
+    <div>
+        {% if current_user.id == user.id %}
+        <a class="btn btn-danger" href="{{ url_for('main.edit_user')}}">修改用户详情</a>
+        {% endif %}
+    </div><a href="{{ url_for('auth.change_password')}}">Change Password</a>
+    显示用户邮箱，头像， 用户名
+    第二部分显示关注的文章和博客评论
+        Center</div>
+</div>
+<p></p>
+<div class="page-header">
+    <h2>关注文章</h2>
+    <ul class="list-group">
+    {% for post in user.posts.all() %}
+    <li class="list-group-item">
+        <h4><a href="{{ url_for('main.show_post', post_id=post.id) }}">{{post.title}}</a></h4>
+    </li>
+    {% endfor %}
+</ul>
+</div>
+<div class="page-header">
+    <h2>评论过的文章</h2>
+    <ul class="list-group">
+        {% for comment in user.comments.all() %}
+        <li class="list-group-item">
+            <span>
+                {% if comment.get_post() %}
+                    <h4><a href="{{ url_for('main.show_post', post_id=comment.get_post().id) }}">
+                        TITLE：{{comment.get_post().title}}</a></h4>
+                {% endif %}
+            </span>
+            <br/>
+            <p>
+                <b>COMMENT：</b>
+                <p>
+                    {% if comment.body_html %}
+                        {{ comment.body_html|safe }}
+                    {% else %}
+                        {{ comment.body }}
+                    {% endif %}
+                </p>
+            </p>
+        </li>
+        <li class="list-group-item">
+        </li>
+    {% endfor %}
+</ul>
+</div>
+
+{% endblock %}

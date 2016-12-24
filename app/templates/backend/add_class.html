@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block page_content %}
+<div class="page-header">
+    <h2>管理类型</h2>
+    <p><a href="{{url_for('backend.index')}}">返回后台首页</a></p>
+</div>
+{{ wtf.quick_form(form) }}
+    <table class="table">
+        <thead>
+            <tr>
+                <td>编号</td>
+                <td>图片</td>
+                <td>类型</td>
+                <td>操作</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for class in classes %}
+            <tr>
+                <td>{{ class.id }}</td>
+                <td>{% if class.img_src %}
+                        <img src="{{ url_for('static', filename=class.img_src)}}">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='pic/1.jpeg')}}">
+                    {% endif %}</td>
+                <td>{{ class.name }}</td>
+                <td>
+                    <a class="btn btn-danger" href="{{url_for('backend.update_class', id
+                    =class.id )}}">修改类型</a>
+                    &nbsp;&nbsp;
+                    <a class="btn btn-danger" href="{{url_for('backend.remove_class', id
+                    =class.id )}}">删除类型</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

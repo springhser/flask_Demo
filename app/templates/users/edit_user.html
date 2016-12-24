@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Bingo --Edit User Info {% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>用户资料编辑</h1>
+</div>
+<div>
+    <div class="col-md-1">
+        <!--<pic src='{{ form.src }}' class="pic-circle">-->
+    </div>
+{{ wtf.quick_form(form) }}
+</div>
+{% endblock %}
+
+
+修改用户界面包括修改密码，重设密码， 上传图像，修改完成后
+返回到用户信息页面

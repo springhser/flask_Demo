@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block page_content %}
+<div class="page-header">
+    <h2>管理图片</h2>
+    <p><a href="{{url_for('backend.index')}}">返回后台首页</a></p>
+</div>
+<div class="page-header">
+    <a href="{{ url_for('backend.change_img', type='background')}}">修改网站首页背景</a>
+
+    <a href="{{ url_for('backend.change_img', type='moren')}}">修改网站默认头像</a>
+</div>
+<div class="page-header">
+    <h3>首页背景预览</h3>
+    {% if filename1 %}
+<img src="{{ url_for('static', filename='pic/background/'+filename1) }}">
+    {%else%}
+    <img src="{{ url_for('static', filename='pic/background/background.png') }}">
+    {% endif %}
+    </div>
+<div class="page-header">
+    <h3>默认头像预览</h3>
+{% if filename2 %}
+<img src="{{ url_for('static', filename='pic/moren/'+filename2) }}">
+    {%else%}
+    <img src="{{ url_for('static', filename='pic/moren/moren.png') }}">
+    {% endif %}
+    </div>
+{% endblock %}

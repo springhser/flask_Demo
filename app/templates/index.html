@@ -1,0 +1,166 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title></title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename = 'favicon.ico') }}"
+    type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename = 'favicon.ico') }}"
+    type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
+    <script src="{{ url_for('static', filename='js/jquery-3.1.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</head>
+<body>
+<div class="navbar navbar-default" role="navigation" style="margin-bottom: 0px;height:20px">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Bingo</a>
+        </div>
+        <div class="navbar-collapse collapse" style="height:20px;">
+            <ul class="nav navbar-nav navbar-right">
+                <!-- 判断当前用户是否已登录 -->
+                {% if current_user.is_administrator() %}
+                    <li><a href="{{ url_for('backend.index') }}">后台管理</a></li>
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                <li class="dropdown">
+                    <a href="#"
+                       class="dropdown-toggle" data-toggle="dropdown">
+                        {% if current_user.img_src %}
+                        <img src="{{ url_for('static', filename=current_user.img_src) }}"
+                        style="width:20px;height:20px;">
+                        {% endif %}
+                        {{ current_user.username }} <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('main.user', username=current_user.username)}}">用户详情</a></li>
+                        <li><a href="{{ url_for('auth.logout') }}">退出</a></li>
+                    </ul>
+                </li>
+
+                {% else %}
+                <li><a href="{{ url_for('auth.login')}}">登录</a> </li>
+                <li><a href="{{ url_for('auth.register')}}">注册</a> </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="jumbotron masthead" style="background-image: url({{ url_for('static', filename='pic/background/background.jpg') }});
+    background-repeat: repeat; text-align: center;height:400px;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+margin-bottom:0px;">
+    <br>
+    <br>
+    <br>
+    <br>
+  <h1 style="color:#fff">欢迎来到Bingo</h1>
+<br>
+  <br>
+  <p>{% if current_user.is_authenticated %}
+      <a class="btn btn-primary btn-lg" href="{{ url_for('auth.logout')}}">我要走了</a>
+      <a class="btn btn-primary btn-lg" href="{{ url_for('main.user', username=current_user.username)}}">
+          用户详情</a>
+      {% else %}
+      <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login')}}" role="button">登录</a>
+      <a class="btn btn-primary btn-lg" href="{{ url_for('auth.register')}}" role="button">注册</a>
+      {% endif %}
+  </p>
+</div>
+<div><ul style="display: block;
+    list-style-type: disc;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    -webkit-padding-start: 40px;
+    padding: 15px 0;
+    text-align: center;
+    background-color: #f5f5f5;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #ddd;"><li><h4>欢迎加入qq群：12345678</h4></li>
+    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+查看公告
+</button>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+×
+</button>
+<h4 class="modal-title" id="myModalLabel">
+站长通知
+</h4>
+</div>
+<div class="modal-body">
+    {% for message in messages %}
+    {% if message.enable %}
+    <p class="text-center">{{message.content_html | safe }}</p>
+    <br>
+    <p class="text-right"><small>{{ message.timestamp }}</small></p>
+    {% endif %}
+    {% endfor %}
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+</button>
+</div>
+</div>
+</div>
+</div></ul></div>
+
+<div class="page-header" style="text-align: center;">
+    <p><h2>文章分类</h2></p>
+</div>
+<div class="page-header" style="margin-right:150px;
+margin-left:150px;">
+<div class="row">
+    {% for class in classes %}
+  <div class="col-sm-6 col-md-4" style="height:380px">
+    <div class="thumbnail">
+        <a href="{{url_for('.show_post_list', class_id=class.id)}}">
+        {% if class.img_src %}
+        <img src="{{ url_for('static', filename=class.img_src)}}"style="height:150px">
+        {% else %}
+        <img src="{{ url_for('static', filename='pic/1.jpeg')}}">
+        {% endif %}
+        </a>
+        <hr>
+<div class="caption">
+        <h3><p class="text-center"><a href="{{url_for('.show_post_list', class_id=class.id)}}">
+            {{ class.name }}</a></p></h3>
+    <br>
+        <h4><p class="text-center">{{ class.brief }}</p></h4>
+</div>
+    </div>
+  </div>
+    {% endfor %}
+</div>
+</div>
+<br/>
+<br/>
+<br/>
+<br/>
+<div class="navbar navbar-default navbar-fixed-bottom" style="padding-top: 8px;">
+			<div class="footer text-center">
+				<div class="container">
+					<p class="text-muted">
+
+                        <h4>Copyright ©2016-2017 Bingo | @版权所有  翻版不究</h4>
+					</p>
+				</div>
+			</div>
+		</div>
+
+</body>
+</html>

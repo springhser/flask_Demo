@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Bingo --Bingo's Home{% endblock %}
+{% block page_content %}
+<div class="page-header"><h1>欢迎来到斌哥的老巢!</h1></div>
+
+<div class="caption">
+    <ul class="list-group">
+       <li class="list-group-item">
+           <a href="{{ url_for('backend.show_user_list')}}">用户管理</a>
+       </li>
+        <li class="list-group-item">
+           <a href="{{ url_for('backend.add_class')}}">博客类型管理</a>
+       </li>
+       <li class="list-group-item">
+           <a href="{{ url_for('backend.show_post_list')}}">博客管理</a>
+       </li>
+        <li class="list-group-item">
+           <a href="{{ url_for('backend.edit_post')}}">编辑博客</a>
+       </li>
+       <li class="list-group-item">
+           <a href="{{ url_for('backend.manage_comment')}}">评论管理</a>
+       </li>
+       <li class="list-group-item">
+           <a href="{{ url_for('backend.manage_message')}}">公告管理</a>
+       </li>
+       <li class="list-group-item">
+           <a href="{{ url_for('backend.manage_img')}}">网站默认图片管理</a>
+       </li>
+        <li class="list-group-item">
+           <a href="#">日志管理（暂时没有）</a>
+       </li>
+    </ul>
+</div>
+
+
+{% endblock %}

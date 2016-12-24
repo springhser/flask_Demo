@@ -1,0 +1,161 @@
+1. 上下文是什么意思
+2. 虚拟环境的创建需要进行联网，不然有些setuptools用不了
+3. 开发过程中需要安装的模块：
+Flask-Script：pip install flask-script
+Flask-Bootstrap:pip install flask-bootstrap
+Flask-Moment(本地化时间和日期):pip install flask-moment
+Flask-WTF: pip install flask-wtf
+Flask-SQLAlchemy:pip install flask-sqlalchemy
+Flask-Migrate: pip install flask-migrate
+Flask-Mail: pip install flask-mail
+Flask-Login: pip install flask-login
+Flask-PageDown:pip install flask-pagedown markdown bleach
+Flask-HTTPAuth:pip install flask-httpauth
+HTTPie:pip install httpie
+coverage(代码覆盖工具):pip install coverage
+
+4. 静态文件统一放在static中，由特殊路由‘/static/<filename>’进行访问（url_for("static", filename='css/styles.css', _external=True)）
+
+5. 数据库操作：
+（1）出现没有MySQLdb驱动的问题则：pip install MySQL-python
+（2）数据库的更新：flask_migrate,
+创建迁移仓库 python manage.py db init
+创建迁移脚本 python manage.py db migrate -m "initial migration"
+更新数据库 python manage.py db upgrade
+
+6. 电子邮件：py
+一个电子邮件需要两个模板,分别用于渲染纯文本正文和富
+文本正文
+
+添加到
+url_for() 函数中的 _external=True 参数要求程序生成完整的 URL,其中包含协议(http://
+或 https://)、主机名和端口。
+
+7. 生成密码散列：
+Werkzeug 提 供 的 generate_password_hash()生成散列值
+check_password_hash(self.password_hash, password)进行验证
+采用属性装饰器，例：（参见Python知识点@property）
+from decimal import Decimal
+
+########################################################################
+class Fees(object):
+    """"""
+
+    #----------------------------------------------------------------------
+    def __init__(self):
+        """Constructor"""
+        self._fee = None
+
+    #----------------------------------------------------------------------
+    @property
+    def fee(self):
+        """
+        The fee property - the getter
+        """
+        raise AttributeError("this is not readable")
+
+    #----------------------------------------------------------------------
+    @fee.setter
+    def fee(self, value):
+        """
+        The setter of the fee property
+        """
+        if isinstance(value, str):
+            self._fee = Decimal(value)
+        elif isinstance(value, Decimal):
+            self._fee = value
+
+#----------------------------------------------------------------------
+if __name__ == "__main__":
+    f = Fees()from
+    f.fee = "89" # 这是调用fee(self, value)，相当于setter方法
+    f.fee   # 相当于调用fee(self),直接抛出异常
+
+8. 蓝本的创建和使用：
+（1）创建：
+    from flask import Blueprint
+    auth = Blueprint('auth', __name__)
+    from . import views（这个放在后面，这是为了避免循环导入依赖,因为在
+views.py 和 errors.py 中还要导入蓝本 main）
+（2）注册蓝本：
+    from *** import auth as auth_blueprint
+    app.register_blueprint(auth_blueprint, url_prefix='/auth')
+
+9. 登录时出现AttributeError: 'User' object has no attribute 'is_active'
+是因为使用flask_login 必须在用户类User实现四种方法其中有一种就是is_active
+可以用提供的UserMixin类，而无需自己实现
+
+10. 在confin.py 文件中的Confin类里面是没有逗号的，不然会引出电子邮件发送错误
+getaddrinfo
+
+11. DateTime.UtcNow的区别
+UTC(协调世界时)时间
+utcnow 的模块导入 ：from datetime import datetime
+
+DateTime.Now本地时间（时区不同，本地时间不同）
+
+12. (request.args.get('next')这是什么
+
+13. 一个web开发中最基本的问题，用GET还是用POST
+
+14. 实际开发中几个需要保密的值，邮箱及密码， 管理员账号密码, 数据库的密码和值
+
+15. request.args.get是什么意思:请求的查询字符串( request.args )
+
+16. 网页显示405 Method not allowed问题
+原因：          web服务器不允许静态文件响应POST返回的提示
+解决方法：      静态文件form表单的method有get
+
+17. 分页功能：
+Jinja2 宏的参数列表中不用加入 **kwargs 即可接收关键字参数。分页宏把接收到的所有关键字
+参数都传给了生成分页链接的 url_for() 方法。这种方式也可在路由中使用，例如包含一个动态
+部分的资料页。pagination_widget 宏可放在其他一些模板的后面。
+
+18. markdown 使用注意事项：
+1. 将生成的HTML文档保存到数据库的时候注意一些标签的过滤
+2. 渲染 HTML 格式内容时使用 | safe 后缀,其目的是告诉 Jinja2 不要转义 HTML 元素。出
+于安全考虑,默认情况下 Jinja2 会转义所有模板变量。Markdown 转换成的 HTML 在服务
+器上生成,因此可以放心渲染。
+
+19. 数据库操作，多对多关系（需要进一步学习）
+如果你想要用多对多关系，你需要定义一个用于关系的辅助表。对于这个辅助表，
+强烈建议不使用模型，而是采用一个实际的表(这样做的理由是操作简单), 而且这个表得放在最前
+面，否则会提示找不到这样的表。当然根据书上多对多的高级应用，为了能在关系中处理自定义的数据,
+我们必须提升关联表的地位,使其变成程序可访问的模型（相当于使用两个一对多的关联）。
+
+20. 对于关注文章的功能，有两种实现方式
+（1）最开始想的，加一个标记参数，用来判断是否已被用户关注，未登录用户均为False,所以要先判断
+是否登录，在判断登录的用户是否在这篇文章中，但是这样的话每一次调用函数都得在链接上加一个字段
+不是很好
+（2）根据书上的方法，选择在模型中就定义好相关的函数，这样很容易就能进行相应的判断
+关于书上的自引用，因为本博客没有这种需求，所以没有应用，不过很值得学习
+
+
+21、图片上传时遇到一些问题，就是保存不了,(问题已解决，原来是路径问题)
+
+22、关于删除功能，尽量不使用删除功能，但确要使用则需注意表之间的关联
+
+23、了解一下db.session.commit()的作用
+
+24、在有关分页的每页项数设置，基本都是在相应的程序中直接写死，这样不太好
+
+25、生成连接程序内不同路由的链接时,使用相对地址就足够了。如果要生成在
+浏览器之外使用的链接,则必须使用绝对地址,例如在电子邮件中发送的
+链接。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
